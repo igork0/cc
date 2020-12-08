@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "------------Start---------"
+yum -y update
+yum -y install httpd
+echo "<html><body><p>Ihor Web site</p></body></html>" > /var/www/html/index.html
+sudo service httpd start
+chkconfig httpd on
+echo "------------End-----------"

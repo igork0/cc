@@ -1,0 +1,34 @@
+
+		vpc-d05eebba
+
+"GroupId": sg-0fefd1eec842468ab
+
+subnet-15e27e7f
+
+
+ami-0c52395a97749da98
+
+"InstanceId": i-031ed7c44bfcb6a5f
+
+"ImageId": "ami-045a7f8b56b8c56a8"
+
+
+
+
+
+aws ec2 create-security-group --group-name practice-3-sg --description "Security group for 22, 80, 443" --vpc-id vpc-d05eebba
+
+aws ec2 authorize-security-group-ingress --group-id sg-0fefd1eec842468ab --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress --group-id sg-0fefd1eec842468ab --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress --group-id sg-0fefd1eec842468ab --protocol tcp --port 443 --cidr 0.0.0.0/0
+
+aws ec2 modify-subnet-attribute --subnet-id subnet-15e27e7f --map-public-ip-on-launch
+
+aws ec2 run-instances --image-id ami-0bd39c806c2335b95 --count 1 --instance-type t2.micro --key-name KeyPairLab3 --security-group-ids sg-0fefd1eec842468ab --subnet-id subnet-15e27e7f --user-data file://apach.txt
+
+aws ec2 create-tags --resources i-031ed7c44bfcb6a5f --tags Key=Role,Value=WebServer
+
+aws ec2 create-image --instance-id i-031ed7c44bfcb6a5f --name "Lab3Practise2" --description "Image (Apache Web Server)"
+
