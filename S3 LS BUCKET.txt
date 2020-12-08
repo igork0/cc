@@ -1,0 +1,10 @@
+aws s3 ls
+aws configure
+aws s3 mb s3://sukhii-buk --region us-east-1    // create bucket
+aws s3 sync . s3://sukhii-buk      // push elements in bucket
+aws s3 website s3://sukhii-buk/ --index-document index.html --error-document error.html    // create web-bucket 
+
+POLICY <------------------------- 
+
+aws s3api put-bucket-policy --bucket rygal-buk --policy "{\"Version\":\"2008-10-17\", \"Statement\":[{\"Sid\":\"AllowPublicRead\", \"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\", \"Resource\":\"arn:aws:s3:::rygal-buk/*\", \"Condition\":{\"NotIpAddress\":{\"aws:SourceIp\":\"50.31.252.0/24\"}}}]}"
+ 
