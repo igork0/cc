@@ -1,0 +1,52 @@
+
+
+aws elbv2 create-load-balancer --name Lab4-ELB --type application --scheme internet-facing --subnets subnet-1f78a574  subnet-514d3f1d
+
+
+aws ec2 create-security-group --group-name Lab4-ELB-SG --description ALB-SG
+
+aws ec2 authorize-security-group-ingress --group-id sg-0e38f115dfe58cfe0 --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+aws ec2 authorize-security-group-ingress --group-id sg-0e38f115dfe58cfe0 --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+aws ec2 create-key-pair --key-name KeyPair4 --query 'MyNewKeypair4' --output text > KeyPair4.pem
+
+aws ec2 run-instances --image-id ami-0583ca2f3ce809fcb --count 1 --instance-type t2.micro --key-name KeyPair4 --associate-public-ip-address --security-group-ids sg-0e38f115dfe58cfe0 --user-data file://UserData1.sh
+
+aws ec2 run-instances --image-id ami-0583ca2f3ce809fcb --count 1 --instance-type t2.micro --key-name KeyPair4 --associate-public-ip-address --security-group-ids sg-0e38f115dfe58cfe0 --user-data file://UserData2.sh
+
+
+aws elbv2 create-target-group --name Lab4-Target-Group --target-type instance --protocol HTTP --port 80 --vpc-id vpc-d06adfbb
+
+aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-2:281212871739:targetgroup/Lab4-Target-Group/7c2e1498da31745d --targets Id=i-0414f040f6b29dcd6 Id=i-0c6f0a7be9a3f8c37
+
+aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:281212871739:loadbalancer/app/Lab4-ELB/148c639e3db80b84 --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:281212871739:targetgroup/Lab4-Target-Group/7c2e1498da31745d
+
+
+
+	vpc-d06adfbb
+
+	subnet-1f78a574
+
+	subnet-514d3f1d
+
+ami-0583ca2f3ce809fcb
+
+
+        
+"LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-2:281212871739:loadbalancer/app/Lab4-ELB/148c639e3db80b84",
+"DNSName": "Lab4-ELB-1837533092.us-east-2.elb.amazonaws.com",
+
+
+"GroupId": "sg-0e38f115dfe58cfe0"
+
+1 "InstanceId": "i-0414f040f6b29dcd6",
+2 "InstanceId": "i-0c6f0a7be9a3f8c37",
+
+
+"TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:281212871739:targetgroup/Lab4-Target-Group/7c2e1498da31745d",
+
+
+
+
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name Lab4-AG --launch-template LaunchTemplateId=lt-0a4df408cb9497a7a --min-size 2 --max-size 2 --desired-capacity 2 --vpc-zone-identifier subnet-5feb2023 --target-group-arns arn:aws:elasticloadbalancing:eu-central-1:267059311178:targetgroup/Lab4-Target-Group/b611f68fc33c17a2
