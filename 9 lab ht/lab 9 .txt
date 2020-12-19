@@ -1,0 +1,16 @@
+aws ecs create-cluster --cluster-name lab9-cluster
+
+aws ecs register-task-definition --cli-input-json file://fargate-task.json
+
+aws ecs list-task-definitions
+
+aws ec2 create-security-group --group-name ecssecgr --description "ECS Security Group" --vpc-id vpc-624b8c04
+
+aws ec2 authorize-security-group-ingress --group-id sg-07746042bb35f90ab --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+aws ecs create-service --cluster lab9-cluster --service-name fargate-service --task-definition sample-fargate:1 --desired-count 1 --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-cfe253a9],securityGroups=[sg-07746042bb35f90ab],assignPublicIp=ENABLED}"
+
+aws ecs list-services --cluster lab9-cluster
+
+aws ecs describe-services --cluster lab9-cluster --services lab9-service
+
